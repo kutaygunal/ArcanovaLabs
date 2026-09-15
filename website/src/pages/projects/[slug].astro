@@ -1,0 +1,115 @@
+---
+import Base from '../../layouts/Base.astro';
+import StoreButtons from '../../components/StoreButtons.astro';
+import { projects, type Project } from '../../data/projects';
+
+export function getStaticPaths() {
+  return projects.map((project) => ({ params: { slug: project.slug }, props: { project } }));
+}
+
+const { project } = Astro.props as { project: Project };
+const others = projects.filter((p) => p.slug !== project.slug);
+---
+
+<Base title={`${project.name}: ${project.tagline}`} description={project.summary} image={project.icon}>
+  <header class="wrap p-hero">
+    <a href="/#work" class="back mono">← All work</a>
+    <div class="box p-head" style={`background:${project.accent}`}>
+      <div class="p-title">
+        <img class="p-icon" src={project.icon} alt={`${project.name} app icon`} width="120" height="120" />
+        <div>
+          <div class="chips">{project.platforms.map((pl) => <span class="chip mono">{pl}</span>)}</div>
+          <h1>{project.name}</h1>
+          <p class="p-tagline">{project.tagline}</p>
+        </div>
+      </div>
+      <p class="p-summary">{project.summary}</p>
+      <StoreButtons links={project.links} />
+    </div>
+  </header>
+
+  <div class="gallery" role="region" aria-label={`${project.name} screenshots`} tabindex="0">
+    <div class="gallery-track">
+      {project.screenshots.map((src, i) => (
+        <img src={src} alt={`${project.name} screenshot ${i + 1}`} loading={i < 3 ? 'eager' : 'lazy'} width="598" height="1300" />
+      ))}
+    </div>
+  </div>
+
+  <section class="wrap p-body">
+    <div class="p-story">
+      <span class="tag mono">The project</span>
+      {project.description.map((para) => <p>{para}</p>)}
+    </div>
+    <aside class="p-aside">
+      <div class="box facts">
+        {project.facts.map((f) => (
+          <div class="fact"><span class="mono">{f.label}</span><b>{f.value}</b></div>
+        ))}
+      </div>
+      <div class="box features">
+        <h2 class="features-title">Key features</h2>
+        <ul>{project.features.map((f) => <li>{f}</li>)}</ul>
+      </div>
+      {project.links.privacy && (
+        <a class="mono privacy" href={project.links.privacy} target="_blank" rel="noopener">{project.name} privacy policy ↗</a>
+      )}
+    </aside>
+  </section>
+
+  <section class="wrap">
+    <div class="box p-cta">
+      <h2>Want an app<br />like this?</h2>
+      <a href="/#contact" class="btn dark">Start a project →</a>
+    </div>
+    {others.length > 0 && (
+      <div class="others">
+        <span class="mono">More work:</span>
+        {others.map((o) => <a class="chip" href={`/projects/${o.slug}`}>{o.name} →</a>)}
+      </div>
+    )}
+  </section>
+</Base>
+
+<style>
+  .p-hero { padding-block: 40px 40px; }
+  .back { display: inline-block; margin-bottom: 20px; font-size: 15px; }
+  .back:hover { text-decoration: underline; }
+  .p-head { padding: 48px; display: grid; gap: 28px; }
+  .p-title { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
+  .p-icon { width: 120px; height: 120px; border: var(--b); border-radius: 28px; box-shadow: var(--sh); background: #fff; }
+  .chips { display: flex; gap: 8px; margin-bottom: 10px; }
+  h1 { font-size: clamp(48px, 8vw, 110px); line-height: .9; }
+  .p-tagline { font-size: 22px; font-weight: 700; margin-top: 8px; }
+  .p-summary { font-size: 22px; line-height: 1.45; max-width: 720px; font-weight: 500; }
+
+  .gallery { overflow-x: auto; border-block: var(--b); background: var(--ink); scroll-snap-type: x mandatory; }
+  .gallery-track { display: flex; gap: 24px; padding: 40px 24px; width: max-content; margin: 0 auto; }
+  .gallery img { width: 240px; border: 3px solid var(--bg); border-radius: 22px; scroll-snap-align: center; }
+
+  .p-body { display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: start; }
+  .p-story p { font-size: 20px; line-height: 1.6; margin-bottom: 20px; }
+  .p-aside { display: grid; gap: 24px; position: sticky; top: 100px; }
+  .facts { background: #fff; padding: 8px 24px; }
+  .fact { display: flex; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 2px dashed var(--ink); }
+  .fact:last-child { border-bottom: none; }
+  .fact b { text-align: right; }
+  .features { background: var(--lime); padding: 26px; }
+  .features-title { font-size: 26px; margin-bottom: 14px; }
+  .features ul { list-style: none; display: grid; gap: 10px; font-weight: 700; }
+  .features li::before { content: '✺ '; }
+  .privacy { text-decoration: underline; }
+
+  .p-cta { background: var(--violet); color: #fff; padding: 48px; display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+  .p-cta h2 { font-size: clamp(36px, 5vw, 64px); }
+  .others { display: flex; gap: 12px; align-items: center; margin-top: 28px; flex-wrap: wrap; }
+
+  @media (max-width: 900px) {
+    .p-head, .p-cta { padding: 28px; }
+    .p-icon { width: 88px; height: 88px; border-radius: 22px; }
+    .p-summary { font-size: 19px; }
+    .p-body { grid-template-columns: 1fr; }
+    .p-aside { position: static; }
+    .gallery img { width: 190px; }
+  }
+</style>

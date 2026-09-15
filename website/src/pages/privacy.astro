@@ -1,0 +1,64 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+import { projects } from '../data/projects';
+
+// TODO: review this policy (ideally with a legal professional) and update the date when you change it.
+const updated = 'September 15, 2026';
+const appPolicies = projects.filter((p) => p.links.privacy);
+---
+
+<Base title="Privacy Policy" description={`How ${site.name} handles your data on this website.`}>
+  <section class="wrap policy">
+    <span class="tag mono">Legal</span>
+    <h1>Privacy<br />policy</h1>
+    <p class="mono updated">Last updated: {updated}</p>
+
+    <div class="box body">
+      <p>This policy explains how {site.name} (“we”, “us”) handles information when you visit this website. Each of our apps has its own privacy policy, linked at the bottom of this page.</p>
+
+      <h2>What we collect</h2>
+      <p>We only collect information you choose to send us through the contact form: your name, email address, the services you’re interested in, your budget range and your message.</p>
+      <p>This website does not use advertising or analytics cookies, and we don’t track you across other websites.</p>
+
+      <h2>How we use it</h2>
+      <p>We use your information only to reply to your enquiry and discuss a possible project with you. We don’t sell or rent your information, and we don’t use it for marketing without your permission.</p>
+
+      <h2>Third-party services</h2>
+      <p>Contact form submissions are processed by <a href="https://formspree.io/legal/privacy-policy" target="_blank" rel="noopener">Formspree</a>, which forwards them to our email. Fonts are loaded from Google Fonts, which may receive your IP address as part of loading them.</p>
+
+      <h2>How long we keep it</h2>
+      <p>We keep enquiry emails for as long as needed to respond and manage any resulting project, and delete them when they’re no longer needed.</p>
+
+      <h2>Your rights</h2>
+      <p>You can ask us at any time to see, correct or delete the information you’ve sent us. Just email <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+
+      <h2>Changes</h2>
+      <p>We may update this policy from time to time. The date at the top shows when it was last changed.</p>
+
+      {appPolicies.length > 0 && (
+        <>
+          <h2>App privacy policies</h2>
+          <ul>
+            {appPolicies.map((p) => (
+              <li><a href={p.links.privacy} target="_blank" rel="noopener">{p.name} privacy policy ↗</a></li>
+            ))}
+          </ul>
+        </>
+      )}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .policy { max-width: 880px; }
+  h1 { font-size: clamp(48px, 8vw, 96px); line-height: .92; }
+  .updated { margin: 16px 0 36px; }
+  .body { background: #fff; padding: 44px; }
+  .body h2 { font-size: 24px; margin: 32px 0 10px; }
+  .body h2:first-of-type { margin-top: 28px; }
+  .body p, .body li { font-size: 18px; line-height: 1.6; margin-bottom: 12px; }
+  .body ul { padding-left: 22px; }
+  .body a { text-decoration: underline; font-weight: 700; }
+  @media (max-width: 900px) { .body { padding: 26px; } }
+</style>

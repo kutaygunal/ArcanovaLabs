@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page not found">
+  <section class="wrap nf">
+    <div class="box card">
+      <span class="mono">Error 404</span>
+      <h1>Oops.<br /><mark>Wrong tap.</mark></h1>
+      <p>This page doesn’t exist, or it moved.</p>
+      <a href="/" class="btn dark">Back to home →</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .card { background: var(--pink); padding: 48px; display: grid; gap: 20px; justify-items: start; }
+  h1 { font-size: clamp(48px, 9vw, 110px); line-height: .92; }
+  h1 mark { background: var(--ink); color: var(--pink); padding: 0 .12em; }
+  p { font-size: 20px; }
+  @media (max-width: 900px) { .card { padding: 28px; } }
+</style>

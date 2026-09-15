@@ -1,0 +1,218 @@
+---
+import Base from '../layouts/Base.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { projects } from '../data/projects';
+import { site } from '../data/site';
+
+const featured = projects[0];
+const single = projects.length === 1;
+
+const services = [
+  {
+    n: '01', icon: '🍎', color: 'var(--pink)', title: 'iOS Apps',
+    text: 'Native Swift and SwiftUI apps built to Apple’s standards — and a bit bolder.',
+    items: ['iPhone & iPad', 'Mac & Apple Watch', 'App Store launch'],
+  },
+  {
+    n: '02', icon: '🤖', color: 'var(--lime)', title: 'Android Apps',
+    text: 'Kotlin and Jetpack Compose apps that run smoothly on thousands of devices.',
+    items: ['Phones & tablets', 'Foldables', 'Google Play launch'],
+  },
+  {
+    n: '03', icon: '🌐', color: 'var(--sky)', title: 'Websites',
+    text: 'Marketing sites, web apps and dashboards that are fast, accessible and SEO-friendly.',
+    items: ['Landing pages', 'Web apps', 'Hosting & care'],
+  },
+];
+
+const ticker = ['iOS', 'Android', 'Web', 'Product design', 'Swift', 'Kotlin', 'UI / UX'];
+---
+
+<Base>
+  <header class="wrap hero">
+    <div class="box hero-main">
+      <span class="mono">✺ {site.tagline}</span>
+      <h1>Apps that<br /><mark>slap.</mark><br />Sites that<br /><mark>stick.</mark></h1>
+      <p>{site.description}</p>
+      <div class="cta">
+        <a href="#contact" class="btn dark">Start a project →</a>
+        <a href="#work" class="btn white">View work</a>
+      </div>
+    </div>
+    <div class="hero-side">
+      <a class="box hov hero-shot" href={`/projects/${featured.slug}`} aria-label={`See the ${featured.name} project`}>
+        <span class="badge display">Live on<br />stores ✺</span>
+        <img src={featured.screenshots[0]} alt={`${featured.name} app screenshot`} width="598" height="1300" />
+      </a>
+      <div class="box hero-meta">
+        <div><b class="display">iOS</b><span class="mono">Native</span></div>
+        <div><b class="display">Android</b><span class="mono">Native</span></div>
+        <div><b class="display">Web</b><span class="mono">Fast</span></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      {[...ticker, ...ticker].map((t) => <span>{t}</span>)}
+    </div>
+  </div>
+
+  <section id="services" class="wrap">
+    <div class="sec-head">
+      <div><span class="tag mono">01 / Services</span><h2>What we<br />build</h2></div>
+      <p class="lead">One team for all three platforms — design, development and launch.</p>
+    </div>
+    <div class="services">
+      {services.map((s) => (
+        <article class="box hov svc">
+          <div class="svc-top">
+            <div class="svc-icon" style={`background:${s.color}`} aria-hidden="true">{s.icon}</div>
+            <span class="mono">{s.n}</span>
+          </div>
+          <h3>{s.title}</h3>
+          <p>{s.text}</p>
+          <ul>{s.items.map((i) => <li>{i}</li>)}</ul>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section id="work" class="wrap work-sec">
+    <div class="sec-head">
+      <div><span class="tag mono">02 / Work</span><h2>Recent<br />drops</h2></div>
+    </div>
+    <div class="work">
+      {projects.map((p) => (
+        <a href={`/projects/${p.slug}`} class:list={['box hov proj', single ? 'big' : 'half']}>
+          <div class="proj-art" style={`background:${p.accent}`}>
+            {p.screenshots.slice(0, 3).map((src, i) => (
+              <img class={`fan fan-${i}`} src={src} alt="" loading="lazy" width="598" height="1300" />
+            ))}
+          </div>
+          <div class="proj-info">
+            <img class="proj-icon" src={p.icon} alt="" width="56" height="56" loading="lazy" />
+            <div class="proj-text">
+              <span class="mono">{p.platforms.join(' + ')}</span>
+              <h3>{p.name}</h3>
+              <p>{p.tagline}</p>
+            </div>
+            <span class="arrow" aria-hidden="true">→</span>
+          </div>
+        </a>
+      ))}
+      <a href="#contact" class:list={['box hov proj next', single ? 'small' : 'full']}>
+        <span class="mono">Slot open</span>
+        <span class="plus display" aria-hidden="true">+</span>
+        <h3>Your app<br />could be next</h3>
+        <span class="btn">Let’s talk →</span>
+      </a>
+    </div>
+  </section>
+
+  <section id="contact" class="wrap">
+    <div class="contact">
+      <div class="box contact-l">
+        <div><span class="tag mono">03 / Contact</span><h2>Let’s<br />build it.</h2></div>
+        <ol class="steps">
+          <li><b>1</b>Tell us your idea</li>
+          <li><b>2</b>Get a free estimate in 48h</li>
+          <li><b>3</b>Ship something awesome</li>
+        </ol>
+        <a class="mail" href={`mailto:${site.email}`}>{site.email}</a>
+      </div>
+      <ContactForm />
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* HERO */
+  .hero { display: grid; grid-template-columns: 1.3fr 1fr; gap: 30px; padding-block: 60px 80px; }
+  .hero-main { background: var(--lime); padding: 48px; display: flex; flex-direction: column; justify-content: space-between; gap: 30px; }
+  h1 { font-size: clamp(42px, 5.4vw, 80px); line-height: .92; }
+  h1 mark { background: var(--ink); color: var(--lime); padding: 0 .12em; }
+  .hero-main p { font-size: 20px; line-height: 1.45; max-width: 520px; font-weight: 500; }
+  .cta { display: flex; gap: 14px; flex-wrap: wrap; }
+  .hero-side { display: grid; grid-template-rows: 1fr auto; gap: 30px; }
+  .hero-shot { background: var(--violet); position: relative; overflow: hidden; display: grid; place-items: center; padding: 30px; min-height: 420px; }
+  .hero-shot img { width: 210px; border: var(--b); border-radius: 26px; box-shadow: 8px 8px 0 var(--ink); transform: rotate(-5deg); transition: transform .3s; }
+  .hero-shot:hover img { transform: rotate(3deg) scale(1.03); }
+  .badge {
+    position: absolute; top: 20px; right: 20px; z-index: 1; background: var(--orange); border: var(--b); border-radius: 50%;
+    width: 96px; height: 96px; display: grid; place-items: center; text-align: center; font-size: 13px; line-height: 1.1;
+    transform: rotate(14deg); animation: wobble 3s ease-in-out infinite;
+  }
+  .hero-meta { background: #fff; padding: 22px 26px; display: flex; justify-content: space-between; gap: 16px; }
+  .hero-meta b { font-size: clamp(22px, 2.4vw, 32px); display: block; }
+
+  /* TICKER */
+  .ticker { border-block: var(--b); background: var(--orange); overflow: hidden; padding: 16px 0; }
+  .ticker-track { display: flex; width: max-content; animation: scroll 22s linear infinite; }
+  .ticker-track span { font-family: 'Archivo Black', sans-serif; font-size: 28px; padding: 0 26px; text-transform: uppercase; white-space: nowrap; }
+  .ticker-track span::after { content: '✺'; margin-left: 52px; }
+
+  .lead { max-width: 380px; font-size: 18px; line-height: 1.5; }
+
+  /* SERVICES */
+  .services { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .svc { padding: 30px; background: #fff; display: flex; flex-direction: column; gap: 18px; }
+  .svc-top { display: flex; justify-content: space-between; align-items: start; }
+  .svc-icon { width: 76px; height: 76px; border: var(--b); border-radius: 16px; display: grid; place-items: center; font-size: 38px; }
+  .svc h3 { font-size: 30px; }
+  .svc p { font-size: 17px; line-height: 1.5; }
+  .svc ul { list-style: none; border-top: var(--b); padding-top: 14px; display: grid; gap: 8px; font-weight: 700; }
+  .svc li::before { content: '→ '; }
+
+  /* WORK */
+  .work-sec { padding-top: 20px; }
+  .work { display: grid; grid-template-columns: repeat(6, 1fr); gap: 28px; }
+  .proj { overflow: hidden; background: #fff; display: flex; flex-direction: column; }
+  .big { grid-column: span 4; }
+  .small { grid-column: span 2; }
+  .half { grid-column: span 3; }
+  .full { grid-column: 1 / -1; }
+  .proj-art { height: 380px; border-bottom: var(--b); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .fan { position: absolute; width: 150px; border: var(--b); border-radius: 18px; box-shadow: 5px 5px 0 var(--ink); transition: transform .3s; }
+  .fan-0 { transform: translateX(-130px) rotate(-10deg) translateY(20px); }
+  .fan-1 { transform: translateY(-10px); z-index: 1; }
+  .fan-2 { transform: translateX(130px) rotate(10deg) translateY(20px); }
+  .proj:hover .fan-0 { transform: translateX(-150px) rotate(-14deg) translateY(10px); }
+  .proj:hover .fan-1 { transform: translateY(-24px) scale(1.04); }
+  .proj:hover .fan-2 { transform: translateX(150px) rotate(14deg) translateY(10px); }
+  .proj-info { padding: 20px 24px; display: flex; align-items: center; gap: 16px; }
+  .proj-icon { width: 56px; height: 56px; border: var(--b); border-radius: 14px; flex-shrink: 0; }
+  .proj-text { flex: 1; min-width: 0; }
+  .proj-text h3 { font-size: 26px; }
+  .proj-text p { opacity: .7; }
+  .arrow { width: 48px; height: 48px; border: var(--b); border-radius: 50%; display: grid; place-items: center; font-size: 22px; transition: .2s; flex-shrink: 0; }
+  .proj:hover .arrow { background: var(--lime); transform: rotate(-45deg); }
+  .next { background: var(--pink); padding: 30px; justify-content: space-between; gap: 20px; }
+  .next h3 { font-size: 30px; line-height: 1; }
+  .plus { font-size: 120px; line-height: .8; }
+
+  /* CONTACT */
+  .contact { display: grid; grid-template-columns: 1fr 1.1fr; gap: 28px; }
+  .contact-l { background: var(--sky); padding: 44px; display: flex; flex-direction: column; justify-content: space-between; gap: 30px; }
+  .contact-l h2 { font-size: clamp(40px, 5vw, 68px); }
+  .steps { list-style: none; display: grid; gap: 12px; }
+  .steps li { background: #fff; border: var(--b); border-radius: 12px; padding: 14px 18px; display: flex; gap: 14px; align-items: center; font-weight: 700; }
+  .steps b { background: var(--ink); color: var(--sky); width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; font-family: 'Space Mono', monospace; flex-shrink: 0; }
+  .mail { font-weight: 700; font-size: 20px; text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 4px; overflow-wrap: anywhere; }
+
+  @keyframes scroll { to { transform: translateX(-50%); } }
+  @keyframes wobble { 50% { transform: rotate(-8deg) scale(1.06); } }
+
+  @media (max-width: 900px) {
+    .hero, .contact, .services { grid-template-columns: 1fr; }
+    .hero { padding-block: 32px 60px; }
+    .hero-main, .contact-l { padding: 28px; }
+    .hero-shot { min-height: 380px; }
+    .work { grid-template-columns: 1fr; }
+    .big, .small, .half, .full { grid-column: auto; }
+    .proj-art { height: 320px; }
+    .fan { width: 120px; }
+    .fan-0 { transform: translateX(-95px) rotate(-10deg) translateY(20px); }
+    .fan-2 { transform: translateX(95px) rotate(10deg) translateY(20px); }
+  }
+</style>

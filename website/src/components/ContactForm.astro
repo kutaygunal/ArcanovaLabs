@@ -1,0 +1,100 @@
+---
+import { site } from '../data/site';
+const endpoint = site.formspreeId ? `https://formspree.io/f/${site.formspreeId}` : '';
+---
+
+<form class="box contact-form" action={endpoint || undefined} method="POST" data-endpoint={endpoint}>
+  <fieldset>
+    <legend class="mono">What do you need?</legend>
+    <div class="toggles">
+      {['iOS app', 'Android app', 'Website', 'Design only'].map((opt, i) => (
+        <label><input type="checkbox" name="services" value={opt} checked={i === 0} /><span>{opt}</span></label>
+      ))}
+    </div>
+  </fieldset>
+  <div class="two">
+    <label class="f"><span class="mono">Name</span><input name="name" required autocomplete="name" placeholder="Jane Doe" /></label>
+    <label class="f"><span class="mono">Email</span><input type="email" name="email" required autocomplete="email" placeholder="jane@company.com" /></label>
+  </div>
+  <label class="f">
+    <span class="mono">Budget</span>
+    <select name="budget">
+      <option>Not sure yet</option>
+      <option>Under $5k</option>
+      <option>$5k – $15k</option>
+      <option>$15k – $50k</option>
+      <option>$50k+</option>
+    </select>
+  </label>
+  <label class="f"><span class="mono">Project details</span><textarea name="message" required placeholder="What are we building?"></textarea></label>
+  <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true" />
+  <button class="btn" type="submit">Send request ✺</button>
+  <p class="status" role="status" aria-live="polite"></p>
+</form>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('.contact-form')!;
+  const status = form.querySelector<HTMLParagraphElement>('.status')!;
+  const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+
+  function show(msg: string, kind: 'ok' | 'err') {
+    status.textContent = msg;
+    status.dataset.kind = kind;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const endpoint = form.dataset.endpoint;
+    if (!endpoint) {
+      show('The form isn’t connected yet. Please email us directly for now.', 'err');
+      return;
+    }
+    button.disabled = true;
+    button.textContent = 'Sending…';
+    try {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { Accept: 'application/json' },
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      form.reset();
+      show('✓ Got it! We’ll get back to you within 48 hours.', 'ok');
+    } catch {
+      show('Something went wrong. Please try again or email us directly.', 'err');
+    } finally {
+      button.disabled = false;
+      button.textContent = 'Send request ✺';
+    }
+  });
+</script>
+
+<style>
+  .contact-form { background: #fff; padding: 40px; display: grid; gap: 18px; }
+  fieldset { border: none; display: grid; gap: 8px; }
+  .f { display: grid; gap: 8px; }
+  input, textarea, select {
+    font-family: inherit; font-size: 17px; padding: 16px; border: var(--b); border-radius: 10px;
+    background: var(--bg); color: var(--ink); width: 100%; outline: none;
+  }
+  input:focus, textarea:focus, select:focus { background: var(--lime); box-shadow: 4px 4px 0 var(--ink); }
+  textarea { min-height: 130px; resize: vertical; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .toggles { display: flex; gap: 10px; flex-wrap: wrap; }
+  .toggles input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .toggles span { display: inline-block; padding: 12px 18px; border: var(--b); border-radius: 10px; font-weight: 700; cursor: pointer; background: #fff; }
+  .toggles input:checked + span { background: var(--violet); color: #fff; box-shadow: 3px 3px 0 var(--ink); }
+  .toggles input:focus-visible + span { outline: 3px solid var(--violet); outline-offset: 3px; }
+  .hp { position: absolute; left: -9999px; }
+  button { font-size: 19px; }
+  button:disabled { opacity: .6; cursor: wait; }
+  .status:empty { display: none; }
+  .status { border: var(--b); padding: 14px; border-radius: 10px; font-weight: 700; }
+  .status[data-kind='ok'] { background: var(--lime); }
+  .status[data-kind='err'] { background: var(--pink); }
+
+  @media (max-width: 900px) {
+    .contact-form { padding: 26px; }
+    .two { grid-template-columns: 1fr; }
+  }
+</style>

@@ -1,0 +1,28 @@
+---
+import { site } from '../data/site';
+const socials = site.socials.filter((s) => s.url);
+const year = new Date().getFullYear();
+---
+
+<footer>
+  <div class="wrap">
+    <div class="foot-big display">Arcanova<br />Labs ✺</div>
+    <div class="foot-row mono">
+      <span>© {year} {site.name}</span>
+      <span class="links">
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+        {socials.map((s) => <a href={s.url} target="_blank" rel="noopener">{s.label}</a>)}
+        <a href="/privacy">Privacy</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  footer { border-top: var(--b); background: var(--ink); color: var(--bg); padding: 60px 0 30px; margin-top: 40px; }
+  .foot-big { font-size: clamp(44px, 11vw, 170px); line-height: .85; color: var(--lime); }
+  .foot-row { display: flex; justify-content: space-between; margin-top: 30px; flex-wrap: wrap; gap: 12px; }
+  .links { display: flex; gap: 18px; flex-wrap: wrap; }
+  .links a { text-transform: none; }
+  .links a:hover { color: var(--lime); }
+</style>
